@@ -5,8 +5,8 @@ on:
     inputs:
       repository-name:
         description: 'The name of the repository'
-        required: true
-        default: '${{ github.repository }}'
+        required: false
+        default: ''
         type: string
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
     - name: Run generate_config.sh
       run: |
         chmod +x .github/scripts/generate_config.sh
-        .github/scripts/generate_config.sh ${{ github.event.inputs.repository-name }}
+        .github/scripts/generate_config.sh ${{ github.event.inputs.repository-name || github.repository }}
     
     - name: Commit and push generated config
       run: |
