@@ -12,7 +12,9 @@ on:
 jobs:
   generate-config:
     runs-on: ubuntu-latest
-
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
