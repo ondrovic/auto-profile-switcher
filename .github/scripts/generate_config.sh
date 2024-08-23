@@ -25,3 +25,6 @@ sed "s/{REPO}/$REPO/g" $TEMPLATE_FILE > $OUTPUT_FILE
 echo "Config generated for repository: $REPO on $(date '+%Y-%m-%d %H:%M:%S')" > "$ISSUE_TEMPLATE_CREATED_FILE"
 
 echo "Generated config.yml for repository: $REPO"
+
+# Remove the config.template.yml
+rm $TEMPLATE_FILE
