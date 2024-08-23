@@ -9,6 +9,10 @@ on:
         default: ''
         type: string
 
+# Add this permissions block at the top level of your workflow
+permissions:
+  contents: write
+
 jobs:
   generate-config:
     runs-on: ubuntu-latest
