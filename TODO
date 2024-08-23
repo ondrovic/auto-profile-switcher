@@ -1,0 +1,8 @@
+
+project:
+  ☐ Switch profile automatically
+  settings:
+    ☐ add extension mapping to the ui
+      ☐ updated README.md with screenshot of settings ui
+  readme.md:
+    ☐ remnove TODO section, use github issues once done

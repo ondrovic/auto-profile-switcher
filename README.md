@@ -83,3 +83,8 @@ Settings ( `Setting UI` )
 Below is a screenshot showing how to access these commands in VS Code. To access the commands, press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (macOS) to open the Command Palette and type the command name `Automatic Profile Switcher`.
 
 ![Command Palette](assets/command_palette.png)
+
+
+## TODO
+
+For more information on tasks and future improvements, please see the [TODO file](TODO).
