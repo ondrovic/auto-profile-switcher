@@ -5,6 +5,7 @@
  */
 import * as vscode from "vscode";
 import * as path from "path";
+import globalState from "./globalState";
 
 /**
  * App information about local system.
@@ -29,18 +30,16 @@ export default Environment;
 /**
  * Resolve the filepath for storage.json file.
  */
-function resolveGlobalStateUri(context: vscode.ExtensionContext): string {
+const resolveGlobalStateUri = (context: vscode.ExtensionContext): string => {
+
+// function resolveGlobalStateUri(context: vscode.ExtensionContext): string {
   const portableAppPath = process.env.VSCODE_PORTABLE;
   let filepath: string;
 
   if (portableAppPath === undefined) {
-    filepath = path.join(
-      context.globalStoragePath,
-      "../../..",
-      "User",
-      "globalStorage",
-      "storage.json"
-    );
+    // Convert the URI to a path and adjust the directory traversal accordingly
+    const globalStoragePath = path.join(context.globalStorageUri.fsPath, "../../..");
+    filepath = path.join(globalStoragePath, "User", "globalStorage", "storage.json");
   } else {
     filepath = path.join(
       portableAppPath,
@@ -52,5 +51,29 @@ function resolveGlobalStateUri(context: vscode.ExtensionContext): string {
   }
 
   return filepath;
-}
+};
+// function resolveGlobalStateUri(context: vscode.ExtensionContext): string {
+//   const portableAppPath = process.env.VSCODE_PORTABLE;
+//   let filepath: string;
+
+//   if (portableAppPath === undefined) {
+//     filepath = path.join(
+//       context.globalStoragePath,
+//       "../../..",
+//       "User",
+//       "globalStorage",
+//       "storage.json"
+//     );
+//   } else {
+//     filepath = path.join(
+//       portableAppPath,
+//       "user-data",
+//       "User",
+//       "globalStorage",
+//       "storage.json"
+//     );
+//   }
+
+//   return filepath;
+// }
 

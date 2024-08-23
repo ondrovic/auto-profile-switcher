@@ -1,73 +1,85 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-# Auto Profile Switcher README
+# Automatic Profile Switcher Extension
 
-This is the README for your extension "test". After writing up a brief description, we recommend including the following sections.
+The Automatic Profile Switcher extension, aims to automatically switch profiles based on your defined extensions. I was tired of my multi technology repos having the wrong set of extensions and I found my self wasting about 1-2 secs everytime I changed items.
 
-## Features
+## Settings
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+### `autoProfileSwitcher.switching.enabled`
 
-For example if there is an image subfolder under your extension project workspace:
+* __Description:__ Enables or disables the automatic profile switching feature.
+* __Type:__ Boolean
+* __Default:__ true
+* __Usage:__ When set to `true`, the extension automatically switches profiles based on the file extension or project type. Set to `false` to disable this functionality.
 
-\!\[feature X\]\(images/feature-x.png\)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### `autoProfileSwitcher.extensions`
 
-## Requirements
+* __Description:__ Controls whether informational messages are displayed when profiles are switched.
+* __Type:__ Boolean
+* __Default:__ true
+* __Usage:__ Set to `true` to display messages when a profile switch occurs. If set to `false`, no messages will be shown. 
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### `autoProfileSwitcher.extensions`
 
-## Extension Settings
+* __Description:__ Defines the mapping between file extensions and their respective profiles. This allows customization of which profile is activated when certain file types are opened.
+* __Type:__ Array of objects
+* __Default:__ []
+* __Structure:__ Each object in the array represents a profile and its associated file extensions. The object has the following properties:
+  * `profile`: (String) The name of the profile.
+  * `extensions`: (Array of Strings) List of file extensions associated with the profile.
+* __Usage:__ Add objects to the array to map specific profiles to their corresponding file extensions. For example, you can add an object to map the `"JavaScriptProfile"` to `[".js", ".jsx"]` extensions.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Example Settings ( `settings.json` ):
 
-For example:
+```json
+{
+  "autoProfileSwitcher.switching.enabled": true,
+  "autoProfileSwitcher.display.messages": true,
+  "autoProfileSwitcher.extensions": [
+    {
+      "profile": "JavaScriptProfile",
+      "extensions": [".js", ".jsx"]
+    },
+    {
+      "profile": "PythonProfile",
+      "extensions": [".py"]
+    },
+    {
+      "profile": "JavaProfile",
+      "extensions": [".java"]
+    }
+  ]
+}
+```
 
-This extension contributes the following settings:
+Settings ( `Setting UI` )
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+![Setting UI](assets/setting_ui.png) 
 
-## Known Issues
+## Commands
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### `autoProfileSwitcher.switching.enable`
+* __Description:__ Command to enable the automatic profile switching feature.
+* __Usage:__ Run this command to turn on automatic profile switching if it is currently disabled.
 
-## Release Notes
+### `autoProfileSwitcher.switching.disable`
+* __Description:__ Command to disable the automatic profile switching feature.
+* __Usage:__ Run this command to turn off automatic profile switching if it is currently enabled.
 
-Users appreciate release notes as you update your extension.
+### `autoProfileSwitcher.display.messages.enable`
+* __Description:__ Command to enable the display of informational messages during profile switches.
+* __Usage:__ Use this command to show messages whenever a profile switch occurs.
 
-### 1.0.0
+### `autoProfileSwitcher.display.messages.disable`
 
-Initial release of ...
+* __Description:__ Command to disable the display of informational messages during profile switches.
+* __Usage:__ Use this command to suppress messages during profile switches.
 
-### 1.0.1
+![User Message](assets/user_message.png)
 
-Fixed issue #.
+### Example Commands Interface
+Below is a screenshot showing how to access these commands in VS Code. To access the commands, press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (macOS) to open the Command Palette and type the command name `Automatic Profile Switcher`.
 
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+![Command Palette](assets/command_palette.png)

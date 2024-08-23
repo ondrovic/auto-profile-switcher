@@ -4,6 +4,7 @@
  * Author Rob O'Leary
  */
 import { promises as fs } from "fs";
+import { Uri } from "vscode";
 
 interface UserDataProfile {
   location: string;
@@ -19,26 +20,8 @@ interface UserData {
   profileAssociations?: ProfileAssociations;
 }
 
-/**
- *  Profiles are identified by an internal ID e.g 6c702312. We retrieve the name of the profile through this ID.
- */
-// function getName(obj: UserData, id: string): string {
-//   let profileName = "Default";
-
-//   if (obj.userDataProfiles) {
-//     const profileFound = obj.userDataProfiles.find((item) => item.location === id);
-
-//     if (profileFound) {
-//       profileName = profileFound.name;
-//     }
-//   }
-
-//   return profileName;
-// }
 
 const getProfileList = (obj: UserData): UserDataProfile[] | undefined => {
-  // let profile: UserDataProfile[] | undefined
-  
   return obj.userDataProfiles;
 };
 
@@ -64,7 +47,7 @@ function globalState(uri: { fsPath: string }) {
     }
   }
 
-  async function getProfileItems(workspaceUri: string): Promise<UserDataProfile[] | undefined> {
+  async function getProfileItems(workspaceUri: Uri): Promise<UserDataProfile[] | undefined> {
     let profiles: UserDataProfile[] | undefined;
 
     if (isEmpty(obj)) {
@@ -76,9 +59,7 @@ function globalState(uri: { fsPath: string }) {
       const workspaceAssociations = obj.profileAssociations.workspaces;
 
       
-      Object.keys(workspaceAssociations).every((key) => {
-        // const workspaceUriString = workspaceUri.toString();
-
+      Object.keys(workspaceAssociations).every((_) => {
         
         return true;
       });
@@ -89,41 +70,7 @@ function globalState(uri: { fsPath: string }) {
     return profiles;
   }
 
-  /**
-   * Get the name of the profile associated with a workspace.
-   */
-  // async function getProfileName(workspaceUri: string): Promise<string | undefined> {
-  //   let name: string | undefined;
-
-  //   if (isEmpty(obj)) {
-  //     await parseFile();
-  //   }
-
-  //   if (obj.profileAssociations && obj.profileAssociations.workspaces) {
-  //     // association is in form of: { workspace_uri : profile_id }
-  //     const workspaceAssociations = obj.profileAssociations.workspaces;
-
-  //     let profileID: string | undefined;
-
-  //     Object.keys(workspaceAssociations).every((key) => {
-  //       const workspaceUriString = workspaceUri.toString();
-
-  //       if (workspaceUriString === key) {
-  //         profileID = workspaceAssociations[key];
-  //         return false;
-  //       }
-
-  //       return true;
-  //     });
-
-  //     name = getName(obj, profileID!);
-  //   }
-
-  //   return name;
-  // }
-
   return {
-    // getProfileName,
     getProfileItems,
   };
 }

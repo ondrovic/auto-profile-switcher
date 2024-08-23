@@ -1,8 +1,13 @@
 {
-  "name": "auto-switcher",
-  "displayName": "Profile Auto Switcher",
-  "description": "Automatic profile switcher",
-  "version": "0.0.1",
+  "name": "auto-profile-switcher",
+  "displayName": "Automatic Profile Switcher",
+  "description": "Switches profiles automatcially based on mapping and active editor window file extension",
+  "repository": {
+    "url": "https://github.com/ondrovic/auto-profile-switcher"
+  },
+  "license":"MIT",
+  "publisher": "ondrovic",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.92.0"
   },
@@ -18,10 +23,20 @@
     "configuration": {
       "type": "object",
       "properties": {
+        "autoProfileSwitcher.switching.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Is automatic profile switching enabled or disabled."
+        },
+        "autoProfileSwitcher.display.messages": {
+          "type": "boolean",
+          "default": true,
+          "description": "Are we displaying messages to the end user?"
+        },
         "autoProfileSwitcher.extensions": {
           "type": "array",
           "default": [],
-          "description": "File extensions mapped to profiles.",
+          "description": "File extensions mapped their respective profiles.",
           "items": {
             "type": "object",
             "properties": {
@@ -47,12 +62,20 @@
     },
     "commands": [
       {
-        "command": "autoProfileSwitcher.enable",
-        "title": "Enable Auto Profile Switcher"
+        "command": "autoProfileSwitcher.switching.enable",
+        "title": "Auto Profile Switcher: Enable Auto Switching"
       },
       {
-        "command": "autoProfileSwitcher.disable",
-        "title": "Disable Auto Profile Switcher"
+        "command": "autoProfileSwitcher.switching.disable",
+        "title": "Auto Profile Switcher: Disable Auto Switching"
+      },
+      {
+        "command": "autoProfileSwitcher.display.messages.enable",
+        "title": "Auto Profile Switcher: Eanble UI Messages"
+      },
+      {
+        "command": "autoProfileSwitcher.display.messages.disable",
+        "title": "Auto Profile Switcher: Disable UI Messages"
       }
     ]
   },

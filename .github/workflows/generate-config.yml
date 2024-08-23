@@ -1,0 +1,33 @@
+name: Generate Config
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository-name:
+        description: 'The name of the repository'
+        required: true
+        default: '${{ github.repository }}'
+        type: string
+
+jobs:
+  generate-config:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Git
+      run: git config --global user.name 'GitHub Actions'
+    
+    - name: Run generate_config.sh
+      run: |
+        chmod +x .github/scripts/generate_config.sh
+        .github/scripts/generate_config.sh ${{ github.event.inputs.repository-name }}
+    
+    - name: Commit and push generated config
+      run: |
+        git add .github/ISSUE_TEMPLATE/config.yml
+        git add .github/ISSUE_TEMPLATE/issue_template_configured.txt
+        git commit -m "Update generated config.yml and issue_template_configured.txt"
+        git push
