@@ -56,7 +56,7 @@ Example Settings ( `settings.json` ):
 
 Settings ( `Setting UI` )
 
-![Setting UI](assets/setting_ui.png) 
+![Settings UI](assets/settings_ui.png) 
 
 ## Commands
 

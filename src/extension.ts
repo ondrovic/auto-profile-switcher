@@ -1,9 +1,3 @@
-// TODO: Ability to see what extensions are mapped to what profiles in Setting UI (not settings.json) - should pull from the autoProfileSwitcher.extensions [] in settings.json
-// TODO: Ability to add profiles and/or extensions to profiles  in Setting UI (not settings.json)  - should add to autoProfileSwitcher.extensions [] in settings.json
-// TODO: Ability to remove profiles and/or extensions to profiles  in Setting UI (not settings.json)  - should remove from autoProfileSwitcher.extensions [] in settings.json
-// TODO: convert rest of funcs to arrow
-// TODO: Add commands for user settings
-
 import globalState from './globalState';
 import Environment from './environment';
 
@@ -19,15 +13,14 @@ import {
 import { registerCommands } from './commands'; // Import commands from commands.ts
 import { updateUser, messagePrefix } from './ui'; // Import UI functions from ui.ts
 
-interface UserDataProfile {
-    location: string;
-    name: string;
-}
+// interface UserDataProfile {
+//     location: string;
+//     name: string;
+// }
 
 let extensionContext: vscode.ExtensionContext;
 let activeExtension: string;
 let isProcessing: boolean = false; // Flag to prevent double firing
-
 
 
 const debounce = (func: (...args: any[]) => void, wait: number) => {
@@ -85,11 +78,11 @@ export const activate = async (context: vscode.ExtensionContext) => {
     updateSettingsFromConfig();
     registerCommands(context);
 
-    context.subscriptions.push(
+    extensionContext.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(handleConfigurationChange)
     );
 
-    context.subscriptions.push(
+    extensionContext.subscriptions.push(
         vscode.workspace.onDidOpenTextDocument(_ => {
             handleDocumentChange(vscode.window.activeTextEditor);
         }),
