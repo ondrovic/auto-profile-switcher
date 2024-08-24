@@ -10,7 +10,7 @@
     "name": "Chris Ondrovic"
   },
   "icon": "assets/icon.png",
-  "license":"MIT",
+  "license": "MIT",
   "publisher": "ondrovic",
   "version": "0.0.2",
   "engines": {
@@ -62,10 +62,13 @@
               }
             ],
             "additionalProperties": false,
-            "required": ["profile", "extensions"]
+            "required": [
+              "profile",
+              "extensions"
+            ]
           },
           "default": [],
-          "description": "File extensions mapped to their respective profiles."
+          "markdownDescription": "File extensions mapped to their respective profiles.\n\nExample:\n\n```json\n[\n  {\n    \"profile\": \"JavaScript\",\n    \"extensions\": [\".js\", \".jsx\", \".ts\", \".tsx\"]\n  },\n  {\n    \"profile\": \"Python\",\n    \"extensions\": [\".py\"]\n  }\n]\n```\nThis configuration maps the 'JavaScript' profile to the file extensions `.js`, `.jsx`, `.ts`, and `.tsx`, and the 'Python' profile to the `.py` extension."
         }
       }
     },
