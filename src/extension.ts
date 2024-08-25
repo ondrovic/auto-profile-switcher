@@ -17,13 +17,7 @@ import { updateUser, messagePrefix } from './ui'; // Import UI functions from ui
 let activeExtension: string;
 let isProcessing: boolean = false; // Flag to prevent double firing
 
-// const debounce = (func: (...args: any[]) => void, wait: number) => {
-//     let timeout: NodeJS.Timeout;
-//     return (...args: any[]) => {
-//         clearTimeout(timeout);
-//         timeout = setTimeout(() => func(...args), wait);
-//     };
-// };
+// TODO: move to utils.ts
 const debounce = <T extends (...args: any[]) => void>(func: T, wait: number) => {
     let timeout: NodeJS.Timeout | undefined;
 
