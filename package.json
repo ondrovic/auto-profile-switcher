@@ -28,32 +28,33 @@
     "configuration": {
       "type": "object",
       "properties": {
-        "autoProfileSwitcher.switching.enabled": {
+        "auto.profile.switcher.switching.enabled": {
           "type": "boolean",
+          "default": true,
           "description": "Is automatic profile switching enabled or disabled."
         },
-        "autoProfileSwitcher.ui.messages": {
+        "auto.profile.switcher.ui.messages": {
           "type": "boolean",
+          "default": true,
           "description": "Are we displaying ui messages to the end user?"
         },
-        "autoProfileSwitcher.console.messages": {
+        "auto.profile.switcher.console.messages": {
           "type": "boolean",
+          "default": false,
           "description": "Are we displaing console messages?"
         },
-        "autoProfileSwitcher.extensions": {
+        "auto.profile.switcher.extensions": {
           "type": "array",
           "items": {
             "type": "object",
-            "properties": [
-              {
-                "key": "profile",
+            "properties": {
+              "profile": {
                 "type": "string",
                 "default": "",
                 "description": "The name of the profile.",
                 "scope": "application"
               },
-              {
-                "key": "extensions",
+              "extensions": {
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -62,7 +63,7 @@
                 "description": "List of file extensions associated with the profile.",
                 "scope": "application"
               }
-            ],
+            },
             "additionalProperties": false,
             "required": [
               "profile",

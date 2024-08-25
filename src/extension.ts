@@ -13,54 +13,72 @@ import {
 import { registerCommands } from './commands'; // Import commands from commands.ts
 import { updateUser, messagePrefix } from './ui'; // Import UI functions from ui.ts
 
-// interface UserDataProfile {
-//     location: string;
-//     name: string;
-// }
 
-let extensionContext: vscode.ExtensionContext;
 let activeExtension: string;
 let isProcessing: boolean = false; // Flag to prevent double firing
 
+// const debounce = (func: (...args: any[]) => void, wait: number) => {
+//     let timeout: NodeJS.Timeout;
+//     return (...args: any[]) => {
+//         clearTimeout(timeout);
+//         timeout = setTimeout(() => func(...args), wait);
+//     };
+// };
+const debounce = <T extends (...args: any[]) => void>(func: T, wait: number) => {
+    let timeout: NodeJS.Timeout | undefined;
 
-const debounce = (func: (...args: any[]) => void, wait: number) => {
-    let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
-        clearTimeout(timeout);
+    return (...args: Parameters<T>): void => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
         timeout = setTimeout(() => func(...args), wait);
     };
 };
 
-const handleDocumentChange = async (editor: vscode.TextEditor | undefined): Promise<void> => {
-    if (isProcessing || !isSwitchingEnabled) { return; }
-    isProcessing = true;
+const handleDocumentChange = async (editor?: vscode.TextEditor): Promise<void> => {
+    if (isProcessing || !isSwitchingEnabled || !editor) { return ; }
 
-    console.log(`${messagePrefix} active window changed!`);
-    activeExtension = await getActiveFileExtension(editor);
-    const profile = await matchExtensionToProfile();
+    try {
+        isProcessing = true;
 
-    // TODO: Switch to the profile
-    await updateUser(`${messagePrefix} Switching to profile: ${profile}`);
+        activeExtension = await getActiveFileExtension(editor);
 
-    isProcessing = false;
+        const profile = await matchExtensionToProfile();
+
+        if (profile) {
+            await updateUser(`${messagePrefix} Switching to profile: ${profile}`);
+            console.log(`${messagePrefix} Switching to profile: ${profile}: ${activeExtension}`);
+        } else {
+            console.log(`${messagePrefix} No matching profile found for: ${activeExtension}`);
+        }
+    } finally {
+        isProcessing = false;
+    }
 };
 
+// TODO: move to utils.ts
 const matchExtensionToProfile = async (): Promise<string> => {
-    const activeExt = activeExtension.toLowerCase();
     const extensions = await getConfiguredExtensions();
 
-    for (const entry of extensions) {
-        if (entry.extensions.includes(activeExt)) {
-            return entry.profile;
-        }
-    }
-    return 'Default';
+    return extensions.find(entry => entry.extensions.includes(`.${activeExtension}`))?.profile || 'Default';
 };
 
-const getActiveFileExtension = async (editor: vscode.TextEditor | undefined): Promise<string> => {
+// TODO: move to utils.ts
+const getActiveFileExtension = async (editor?: vscode.TextEditor): Promise<string> => {
     const fileName = editor?.document.fileName;
-    return fileName?.split('.').pop() || 'no extension';
+
+    if (!fileName) { return 'no extension'; }
+
+    // Split the filename by periods and get the last part
+    const parts = fileName.split('.');
+    // If there is more than one part, pop the last part; otherwise, default to 'no extension'
+    const ext = parts.length > 1 ? parts.pop() : 'no extension';
+
+    // Ensure `ext` is a string
+    return ext || 'no extension';
 };
+
+
 
 const handleConfigurationChange = debounce((event: vscode.ConfigurationChangeEvent) => {
     if (event.affectsConfiguration('autoProfileSwitcher.switching.enabled') ||
@@ -72,17 +90,16 @@ const handleConfigurationChange = debounce((event: vscode.ConfigurationChangeEve
 
 export const activate = async (context: vscode.ExtensionContext) => {
     console.log(`${messagePrefix} is now active!`);
-    extensionContext = context;
 
     await ensureSettings();
     updateSettingsFromConfig();
     registerCommands(context);
 
-    extensionContext.subscriptions.push(
+    context.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(handleConfigurationChange)
     );
 
-    extensionContext.subscriptions.push(
+    context.subscriptions.push(
         vscode.workspace.onDidOpenTextDocument(_ => {
             handleDocumentChange(vscode.window.activeTextEditor);
         }),
@@ -104,7 +121,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
             let state = globalState(globalStateUri);
             let profiles = await state?.getProfileItems(mainWorkspaceUri);
 
-            console.log(profiles);
+            // console.log(profiles);
         } catch (e) {
             console.error(e);
         }
