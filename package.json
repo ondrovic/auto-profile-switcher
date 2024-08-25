@@ -30,13 +30,15 @@
       "properties": {
         "autoProfileSwitcher.switching.enabled": {
           "type": "boolean",
-          "default": true,
           "description": "Is automatic profile switching enabled or disabled."
         },
-        "autoProfileSwitcher.display.messages": {
+        "autoProfileSwitcher.ui.messages": {
           "type": "boolean",
-          "default": true,
-          "description": "Are we displaying messages to the end user?"
+          "description": "Are we displaying ui messages to the end user?"
+        },
+        "autoProfileSwitcher.console.messages": {
+          "type": "boolean",
+          "description": "Are we displaing console messages?"
         },
         "autoProfileSwitcher.extensions": {
           "type": "array",
@@ -67,7 +69,6 @@
               "extensions"
             ]
           },
-          "default": [],
           "markdownDescription": "File extensions mapped to their respective profiles.\n\nExample:\n\n```json\n[\n  {\n    \"profile\": \"JavaScript\",\n    \"extensions\": [\".js\", \".jsx\", \".ts\", \".tsx\"]\n  },\n  {\n    \"profile\": \"Python\",\n    \"extensions\": [\".py\"]\n  }\n]\n```\nThis configuration maps the 'JavaScript' profile to the file extensions `.js`, `.jsx`, `.ts`, and `.tsx`, and the 'Python' profile to the `.py` extension."
         }
       }
@@ -82,12 +83,20 @@
         "title": "Auto Profile Switcher: Disable Auto Switching"
       },
       {
-        "command": "autoProfileSwitcher.display.messages.enable",
+        "command": "autoProfileSwitcher.ui.messages.enable",
         "title": "Auto Profile Switcher: Eanble UI Messages"
       },
       {
-        "command": "autoProfileSwitcher.display.messages.disable",
+        "command": "autoProfileSwitcher.ui.messages.disable",
         "title": "Auto Profile Switcher: Disable UI Messages"
+      },
+      {
+        "command": "autoProfileSwitcher.console.messages.enable",
+        "title": "Auto Profile Switcher: Eanble COnsole Messages"
+      },
+      {
+        "command": "autoProfileSwitcher.console.messages.disable",
+        "title": "Auto Profile Switcher: Disable Console Messages"
       }
     ]
   },

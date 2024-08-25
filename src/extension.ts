@@ -64,7 +64,7 @@ const getActiveFileExtension = async (editor: vscode.TextEditor | undefined): Pr
 
 const handleConfigurationChange = debounce((event: vscode.ConfigurationChangeEvent) => {
     if (event.affectsConfiguration('autoProfileSwitcher.switching.enabled') ||
-        event.affectsConfiguration('autoProfileSwitcher.display.messages')) {
+        event.affectsConfiguration('autoProfileSwitcher.ui.messages')) {
         updateSettingsFromConfig();
         console.log(`${messagePrefix} settings updated!`);
     }

@@ -19,8 +19,8 @@ export const ensureSettings = async (): Promise<void> => {
     }
 
     // Ensure 'display.messages' setting is present and has a default value
-    if (config.get('display.messages') === undefined) {
-        await config.update('display.messages', true, vscode.ConfigurationTarget.Global);
+    if (config.get('ui.messages') === undefined) {
+        await config.update('ui.messages', true, vscode.ConfigurationTarget.Global);
     }
 };
 
@@ -28,7 +28,7 @@ export const ensureSettings = async (): Promise<void> => {
 export const updateSettingsFromConfig = () => {
     const config = vscode.workspace.getConfiguration('autoProfileSwitcher');
     isSwitchingEnabled = config.get<boolean>('switching.enabled', true);
-    displayUIMessages = config.get<boolean>('display.messages', true);
+    displayUIMessages = config.get<boolean>('ui.messages', true);
 };
 
 // Function to set the switching enable setting
@@ -41,5 +41,5 @@ export const setSwitchingIsEnabled = async (enabled: boolean): Promise<void> => 
 // Function to set the display user messages setting
 export const setDisplayUIMessages = async (display: boolean): Promise<void> => {
     const config = vscode.workspace.getConfiguration('autoProfileSwitcher');
-    await config.update('display.messages', display, vscode.ConfigurationTarget.Global);
+    await config.update('ui.messages', display, vscode.ConfigurationTarget.Global);
 };
