@@ -4,5 +4,6 @@ project:
   settings:
     ✘ add extension mapping to the ui @cancelled(24-08-24 11:33)
       ✔ updated README.md with screenshot of settings ui @done(24-08-24 11:33)
+      ☐ move to config store, possible other solution as right now the settings are persisting like they should
   readme.md:
     ☐ remnove TODO section, use github issues once done

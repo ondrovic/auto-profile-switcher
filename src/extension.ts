@@ -1,5 +1,5 @@
-import globalState from './globalState';
-import Environment from './environment';
+// import globalState from './globalState';
+// import Environment from './environment';
 
 
 import * as vscode from 'vscode';
@@ -7,11 +7,12 @@ import {
     getConfiguredExtensions,
     ensureSettings,
     updateSettingsFromConfig,
-    isSwitchingEnabled,
-    setSwitchingIsEnabled,
+    switchingState,
+    setSwitchingState,
 } from './settings'; // Import functions from settings.ts
 import { registerCommands } from './commands'; // Import commands from commands.ts
-import { updateUser, messagePrefix } from './ui'; // Import UI functions from ui.ts
+import { messageOutput, consoleOutput } from './ui'; // Import UI functions from ui.ts
+import { CFG_CONSOLE_MESSAGES_PATH, CFG_EXTENSIONS_PATH, CFG_SWITCHING_PATH, CFG_UI_MESSAGES_PATH } from './constants';
 
 
 let activeExtension: string;
@@ -30,7 +31,7 @@ const debounce = <T extends (...args: any[]) => void>(func: T, wait: number) => 
 };
 
 const handleDocumentChange = async (editor?: vscode.TextEditor): Promise<void> => {
-    if (isProcessing || !isSwitchingEnabled || !editor) { return ; }
+    if (isProcessing || !switchingState || !editor) { return; }
 
     try {
         isProcessing = true;
@@ -40,10 +41,10 @@ const handleDocumentChange = async (editor?: vscode.TextEditor): Promise<void> =
         const profile = await matchExtensionToProfile();
 
         if (profile) {
-            await updateUser(`${messagePrefix} Switching to profile: ${profile}`);
-            console.log(`${messagePrefix} Switching to profile: ${profile}: ${activeExtension}`);
+            await messageOutput(`Switching to profile: ${profile}`);
+            consoleOutput(`Switching to profile: ${profile}: ${activeExtension}`);
         } else {
-            console.log(`${messagePrefix} No matching profile found for: ${activeExtension}`);
+            consoleOutput(`No matching profile found for: ${activeExtension}`);
         }
     } finally {
         isProcessing = false;
@@ -75,15 +76,18 @@ const getActiveFileExtension = async (editor?: vscode.TextEditor): Promise<strin
 
 
 const handleConfigurationChange = debounce((event: vscode.ConfigurationChangeEvent) => {
-    if (event.affectsConfiguration('autoProfileSwitcher.switching.enabled') ||
-        event.affectsConfiguration('autoProfileSwitcher.ui.messages')) {
-        updateSettingsFromConfig();
-        console.log(`${messagePrefix} settings updated!`);
+    if (event.affectsConfiguration(CFG_SWITCHING_PATH) ||
+        event.affectsConfiguration(CFG_UI_MESSAGES_PATH) ||
+        event.affectsConfiguration(CFG_CONSOLE_MESSAGES_PATH) || 
+        event.affectsConfiguration(CFG_EXTENSIONS_PATH))
+        {
+            updateSettingsFromConfig();
+            consoleOutput(`settings updated!`);
     }
 }, 500);
 
 export const activate = async (context: vscode.ExtensionContext) => {
-    console.log(`${messagePrefix} is now active!`);
+    consoleOutput('is now active!');
 
     await ensureSettings();
     updateSettingsFromConfig();
@@ -104,25 +108,25 @@ export const activate = async (context: vscode.ExtensionContext) => {
 
     // TODO: move to own file
     // grab profiles
-    let workspaceFolders = vscode.workspace.workspaceFolders;
+    // let workspaceFolders = vscode.workspace.workspaceFolders;
 
-    if (workspaceFolders) {
-        let mainWorkspaceUri = workspaceFolders[0].uri;
+    // if (workspaceFolders) {
+    //     let mainWorkspaceUri = workspaceFolders[0].uri;
 
-        try {
-            let env = new Environment(context);
-            let globalStateUri = env.getGlobalStateUri();
-            let state = globalState(globalStateUri);
-            let profiles = await state?.getProfileItems(mainWorkspaceUri);
+    //     try {
+    //         let env = new Environment(context);
+    //         let globalStateUri = env.getGlobalStateUri();
+    //         let state = globalState(globalStateUri);
+    //         let profiles = await state?.getProfileItems(mainWorkspaceUri);
 
-            // console.log(profiles);
-        } catch (e) {
-            console.error(e);
-        }
-    }
+    //         // consoleOutput(profiles);
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // }
 };
 
 export const deactivate = async (): Promise<void> => {
-    console.log(`${messagePrefix} is now deactivated!`);
-    await setSwitchingIsEnabled(false);
+    consoleOutput('is now deactivated!');
+    await setSwitchingState(false);
 };

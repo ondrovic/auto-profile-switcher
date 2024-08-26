@@ -1,43 +1,42 @@
 import * as vscode from 'vscode';
-import { setSwitchingIsEnabled, setDisplayUIMessages } from './settings'; // Import from settings.ts
-
-const messagePrefix = "Auto Profile Switcher -";
+import {
+    CMD_CONSOLE_MESSAGES_DISABLE, CMD_CONSOLE_MESSAGES_ENABLE,
+    CMD_SWITCHING_DISABLE, CMD_SWITCHING_ENABLE,
+    CMD_UI_MESSAGES_DISABLE, CMD_UI_MESSAGES_ENABLE
+} from './constants';
+import { setConsoleMessages, setDisplayUIMessages, setSwitchingState } from './settings';
 
 export const registerCommands = (context: vscode.ExtensionContext) => {
-    const switchingEnableCommand = vscode.commands.registerCommand('autoProfileSwitcher.switching.enable', async () => {
-        await setSwitchingIsEnabled(true);
-        console.log(`${messagePrefix} switching enabled!`);
+    const cmdEnableSwitching = vscode.commands.registerCommand(CMD_SWITCHING_ENABLE, async () => {
+        await setSwitchingState(true);
     });
 
-    const switchingDisableCommand = vscode.commands.registerCommand('autoProfileSwitcher.switching.disable', async () => {
-        await setSwitchingIsEnabled(false);
-        console.log(`${messagePrefix} switching disabled!`);
+    const cmdDisableSwitching = vscode.commands.registerCommand(CMD_SWITCHING_DISABLE, async () => {
+        await setSwitchingState(false);
     });
 
-    const displayMessagesEnableCommand = vscode.commands.registerCommand("autoProfileSwitcher.ui.messages.enable", async () => {
+    const cmdEnableUIMessages = vscode.commands.registerCommand(CMD_UI_MESSAGES_ENABLE, async () => {
         await setDisplayUIMessages(true);
-        console.log(`${messagePrefix} display messages enabled!`);
     });
 
-    const displayMessagesDisableCommand = vscode.commands.registerCommand("autoProfileSwitcher.ui.messages.disable", async () => {
+    const cmdDisableUIMessages = vscode.commands.registerCommand(CMD_UI_MESSAGES_DISABLE, async () => {
         await setDisplayUIMessages(false);
-        console.log(`${messagePrefix} display messages disabled!`);
     });
 
-    const cmdConsoleMessagesEnableCommand = vscode.commands.registerCommand("autoProfileSwitcher.console.messages.enable", async () => {
-        await setDisplayUIMessages(true);
-        console.log(`${messagePrefix} display messages enabled!`);
+    const cmdEnableConsoleMessages = vscode.commands.registerCommand(CMD_CONSOLE_MESSAGES_ENABLE, async () => {
+        await setConsoleMessages(true);
     });
 
-    const cmdConsoleMessagesDisableCommand = vscode.commands.registerCommand("autoProfileSwitcher.console.messages.disable", async () => {
-        await setDisplayUIMessages(false);
-        console.log(`${messagePrefix} display messages disabled!`);
+    const cmdDisableConsoleMessages = vscode.commands.registerCommand(CMD_CONSOLE_MESSAGES_DISABLE, async () => {
+        await setConsoleMessages(false);
     });
 
     context.subscriptions.push(
-        switchingEnableCommand,
-        switchingDisableCommand,
-        displayMessagesEnableCommand,
-        displayMessagesDisableCommand
+        cmdEnableSwitching,
+        cmdDisableSwitching,
+        cmdEnableUIMessages,
+        cmdDisableUIMessages,
+        cmdEnableConsoleMessages,
+        cmdDisableConsoleMessages
     );
 };

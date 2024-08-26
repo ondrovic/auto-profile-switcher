@@ -1,47 +1,54 @@
 import * as vscode from 'vscode';
-import { CONFIG_ROOT, EXTENSIONS } from './constants';
+import { CFG_CONSOLE_MESSAGE_STATE, CFG_EXTENSIONS, CFG_SWITCHING_STATE, CFG_ROOT, CFG_UI_MESSSAGE_STATE, MESSAGE_PREFIX } from './constants';
+import { consoleOutput } from './ui';
 
-export let isSwitchingEnabled: boolean; // Will be set from config
-export let displayUIMessages: boolean; // Will be set from config
+// BUGFIX: these aren't persisting meaning no matter what you change the setting to they are always flase :*-(
+export let switchingState: boolean;
+export let uiMessagesState: boolean;
+export let consoleMessageState: boolean;
 
-const config = vscode.workspace.getConfiguration(CONFIG_ROOT);
+const config = vscode.workspace.getConfiguration(CFG_ROOT);
+
 // Function to get configured extensions
 export const getConfiguredExtensions = async (): Promise<{ profile: string; extensions: string[] }[]> => {
-    // const config = vscode.workspace.getConfiguration(CONFIG_ROOT);
-    ;return config.get(EXTENSIONS) || [];
+    return config.get(CFG_EXTENSIONS) || [];
 };
 
 // Function to ensure that settings are present with default values
 export const ensureSettings = async (): Promise<void> => {
-    // const config = vscode.workspace.getConfiguration(CONFIG_ROOT);
-
     // Ensure 'switching.enable' setting is present and has a default value
-    if (config.get('switching.enabled') === undefined) {
-        await config.update('switching.enable', true, vscode.ConfigurationTarget.Global);
+    if (config.get(CFG_SWITCHING_STATE) === undefined) {
+        await config.update(CFG_SWITCHING_STATE, true, vscode.ConfigurationTarget.Global);
     }
 
     // Ensure 'display.messages' setting is present and has a default value
-    if (config.get('ui.messages') === undefined) {
-        await config.update('ui.messages', true, vscode.ConfigurationTarget.Global);
+    if (config.get(CFG_UI_MESSSAGE_STATE) === undefined) {
+        await config.update(CFG_UI_MESSSAGE_STATE, true, vscode.ConfigurationTarget.Global);
     }
 };
 
 // Function to update settings from the configuration
 export const updateSettingsFromConfig = () => {
-    // const config = vscode.workspace.getConfiguration(CONFIG_ROOT);
-    isSwitchingEnabled = config.get<boolean>('switching.enabled', true);
-    displayUIMessages = config.get<boolean>('ui.messages', true);
+    switchingState = config.get<boolean>(CFG_SWITCHING_STATE, true);
+    uiMessagesState = config.get<boolean>(CFG_UI_MESSSAGE_STATE, true);
+    consoleMessageState = config.get<boolean>(CFG_CONSOLE_MESSAGE_STATE, true);
 };
 
 // Function to set the switching enable setting
-export const setSwitchingIsEnabled = async (enabled: boolean): Promise<void> => {
-    // const config = vscode.workspace.getConfiguration(CONFIG_ROOT);
-    await config.update('switching.enabled', enabled, vscode.ConfigurationTarget.Global);
+export const setSwitchingState = async (state: boolean): Promise<void> => {
+    await config.update(CFG_SWITCHING_STATE, state, vscode.ConfigurationTarget.Global);
     updateSettingsFromConfig(); // Immediately update settings after changing
+    consoleOutput(`Switching is now ${state ? 'enabled' : 'disabled'}!`);
 };
 
 // Function to set the display user messages setting
-export const setDisplayUIMessages = async (display: boolean): Promise<void> => {
-    // const config = vscode.workspace.getConfiguration(CONFIG_ROOT);
-    await config.update('ui.messages', display, vscode.ConfigurationTarget.Global);
+export const setDisplayUIMessages = async (state: boolean): Promise<void> => {
+    await config.update(CFG_UI_MESSSAGE_STATE, state, vscode.ConfigurationTarget.Global);
+    consoleOutput(`UI messages ${state ? 'enabled' : 'disabled'}!`);
+};
+
+// Func to set tehe console messages setting
+export const setConsoleMessages = async (state: boolean): Promise<void> => {
+    await config.update(CFG_CONSOLE_MESSAGE_STATE, state, vscode.ConfigurationTarget.Global);
+    consoleOutput(`Console messages ${state ? 'enabled' : 'disabled'}!`);
 };

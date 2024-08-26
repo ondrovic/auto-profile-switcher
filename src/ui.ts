@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { displayUIMessages } from './settings';
-
-export const messagePrefix = "Auto Profile Switcher -";
+import { uiMessagesState, consoleMessageState } from './settings';
+import { MESSAGE_PREFIX } from './constants';
 
 export const showMessageWithProgress = async (message: string): Promise<void> => {
     await vscode.window.withProgress(
@@ -18,8 +17,14 @@ export const showMessageWithProgress = async (message: string): Promise<void> =>
     );
 };
 
-export const updateUser = async (status: string): Promise<void> => {
-    if (displayUIMessages) {
-        await showMessageWithProgress(status);
+export const messageOutput = async (message: string): Promise<void> => {
+    if (uiMessagesState) {
+        await showMessageWithProgress(`${MESSAGE_PREFIX} ${message}`);
+    }
+};
+
+export const consoleOutput = async (message: string): Promise<void> => {
+    if (consoleMessageState) {
+        console.log(`${MESSAGE_PREFIX} ${message}`);
     }
 };
