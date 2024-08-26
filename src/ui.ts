@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
-import { uiMessagesState, consoleMessageState } from './settings';
 import { MESSAGE_PREFIX } from './constants';
+import {
+    consoleMessageState,
+    uiMessagesState
+} from './settings';
 
 export const showMessageWithProgress = async (message: string): Promise<void> => {
     await vscode.window.withProgress(

@@ -1,34 +1,30 @@
-// import globalState from './globalState';
-// import Environment from './environment';
-
-
 import * as vscode from 'vscode';
+import { registerCommands } from './commands';
 import {
-    getConfiguredExtensions,
+    CFG_CONSOLE_MESSAGES_PATH,
+    CFG_EXTENSIONS_PATH,
+    CFG_SWITCHING_PATH,
+    CFG_UI_MESSAGES_PATH
+} from './constants';
+import {
+    activate as activateSettings,
     ensureSettings,
-    updateSettingsFromConfig,
-    switchingState,
     setSwitchingState,
-} from './settings'; // Import functions from settings.ts
-import { registerCommands } from './commands'; // Import commands from commands.ts
-import { messageOutput, consoleOutput } from './ui'; // Import UI functions from ui.ts
-import { CFG_CONSOLE_MESSAGES_PATH, CFG_EXTENSIONS_PATH, CFG_SWITCHING_PATH, CFG_UI_MESSAGES_PATH } from './constants';
+    switchingState,
+    updateSettingsFromConfig,
+} from './settings';
+import {
+    consoleOutput,
+    messageOutput
+} from './ui';
+import {
+    debounce,
+    getActiveFileExtension,
+    matchExtensionToProfile,
+    setActiveExtension
+} from './utils';
 
-
-let activeExtension: string;
-let isProcessing: boolean = false; // Flag to prevent double firing
-
-// TODO: move to utils.ts
-const debounce = <T extends (...args: any[]) => void>(func: T, wait: number) => {
-    let timeout: NodeJS.Timeout | undefined;
-
-    return (...args: Parameters<T>): void => {
-        if (timeout) {
-            clearTimeout(timeout);
-        }
-        timeout = setTimeout(() => func(...args), wait);
-    };
-};
+let isProcessing: boolean = false;
 
 const handleDocumentChange = async (editor?: vscode.TextEditor): Promise<void> => {
     if (isProcessing || !switchingState || !editor) { return; }
@@ -36,7 +32,8 @@ const handleDocumentChange = async (editor?: vscode.TextEditor): Promise<void> =
     try {
         isProcessing = true;
 
-        activeExtension = await getActiveFileExtension(editor);
+        const activeExtension = await getActiveFileExtension(editor);
+        setActiveExtension(activeExtension);
 
         const profile = await matchExtensionToProfile();
 
@@ -51,43 +48,34 @@ const handleDocumentChange = async (editor?: vscode.TextEditor): Promise<void> =
     }
 };
 
-// TODO: move to utils.ts
-const matchExtensionToProfile = async (): Promise<string> => {
-    const extensions = await getConfiguredExtensions();
-
-    return extensions.find(entry => entry.extensions.includes(`.${activeExtension}`))?.profile || 'Default';
-};
-
-// TODO: move to utils.ts
-const getActiveFileExtension = async (editor?: vscode.TextEditor): Promise<string> => {
-    const fileName = editor?.document.fileName;
-
-    if (!fileName) { return 'no extension'; }
-
-    // Split the filename by periods and get the last part
-    const parts = fileName.split('.');
-    // If there is more than one part, pop the last part; otherwise, default to 'no extension'
-    const ext = parts.length > 1 ? parts.pop() : 'no extension';
-
-    // Ensure `ext` is a string
-    return ext || 'no extension';
-};
-
-
-
 const handleConfigurationChange = debounce((event: vscode.ConfigurationChangeEvent) => {
-    if (event.affectsConfiguration(CFG_SWITCHING_PATH) ||
-        event.affectsConfiguration(CFG_UI_MESSAGES_PATH) ||
-        event.affectsConfiguration(CFG_CONSOLE_MESSAGES_PATH) || 
-        event.affectsConfiguration(CFG_EXTENSIONS_PATH))
-        {
-            updateSettingsFromConfig();
-            consoleOutput(`settings updated!`);
+    const updatedSettings: string[] = [];
+
+    if (event.affectsConfiguration(CFG_SWITCHING_PATH)) {
+        updatedSettings.push('Switching');
+    }
+    if (event.affectsConfiguration(CFG_UI_MESSAGES_PATH)) {
+        updatedSettings.push('UI Messages');
+    }
+    if (event.affectsConfiguration(CFG_CONSOLE_MESSAGES_PATH)) {
+        updatedSettings.push('Console Messages');
+    }
+    if (event.affectsConfiguration(CFG_EXTENSIONS_PATH)) {
+        updatedSettings.push('Extensions');
+    }
+
+    if (updatedSettings.length > 0) {
+        updateSettingsFromConfig();
+        const settingsString = updatedSettings.join(', ');
+        consoleOutput(`Settings updated: ${settingsString}`);
     }
 }, 500);
 
 export const activate = async (context: vscode.ExtensionContext) => {
-    consoleOutput('is now active!');
+    consoleOutput('Extension is now active!');
+
+    // Activate settings
+    activateSettings(context);
 
     await ensureSettings();
     updateSettingsFromConfig();
@@ -105,28 +93,9 @@ export const activate = async (context: vscode.ExtensionContext) => {
             handleDocumentChange(editor);
         })
     );
-
-    // TODO: move to own file
-    // grab profiles
-    // let workspaceFolders = vscode.workspace.workspaceFolders;
-
-    // if (workspaceFolders) {
-    //     let mainWorkspaceUri = workspaceFolders[0].uri;
-
-    //     try {
-    //         let env = new Environment(context);
-    //         let globalStateUri = env.getGlobalStateUri();
-    //         let state = globalState(globalStateUri);
-    //         let profiles = await state?.getProfileItems(mainWorkspaceUri);
-
-    //         // consoleOutput(profiles);
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // }
 };
 
 export const deactivate = async (): Promise<void> => {
-    consoleOutput('is now deactivated!');
+    consoleOutput('Extension is now deactivated!');
     await setSwitchingState(false);
 };
