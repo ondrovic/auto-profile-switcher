@@ -28,30 +28,33 @@
     "configuration": {
       "type": "object",
       "properties": {
-        "autoProfileSwitcher.switching.enabled": {
+        "auto.profile.switcher.switching.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Is automatic profile switching enabled or disabled."
         },
-        "autoProfileSwitcher.display.messages": {
+        "auto.profile.switcher.ui.messages": {
           "type": "boolean",
           "default": true,
-          "description": "Are we displaying messages to the end user?"
+          "description": "Are we displaying ui messages to the end user?"
         },
-        "autoProfileSwitcher.extensions": {
+        "auto.profile.switcher.console.messages": {
+          "type": "boolean",
+          "default": false,
+          "description": "Are we displaing console messages?"
+        },
+        "auto.profile.switcher.extensions": {
           "type": "array",
           "items": {
             "type": "object",
-            "properties": [
-              {
-                "key": "profile",
+            "properties": {
+              "profile": {
                 "type": "string",
                 "default": "",
                 "description": "The name of the profile.",
                 "scope": "application"
               },
-              {
-                "key": "extensions",
+              "extensions": {
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -60,34 +63,41 @@
                 "description": "List of file extensions associated with the profile.",
                 "scope": "application"
               }
-            ],
+            },
             "additionalProperties": false,
             "required": [
               "profile",
               "extensions"
             ]
           },
-          "default": [],
           "markdownDescription": "File extensions mapped to their respective profiles.\n\nExample:\n\n```json\n[\n  {\n    \"profile\": \"JavaScript\",\n    \"extensions\": [\".js\", \".jsx\", \".ts\", \".tsx\"]\n  },\n  {\n    \"profile\": \"Python\",\n    \"extensions\": [\".py\"]\n  }\n]\n```\nThis configuration maps the 'JavaScript' profile to the file extensions `.js`, `.jsx`, `.ts`, and `.tsx`, and the 'Python' profile to the `.py` extension."
         }
       }
     },
     "commands": [
       {
-        "command": "autoProfileSwitcher.switching.enable",
+        "command": "auto.profile.switcher.switching.enable",
         "title": "Auto Profile Switcher: Enable Auto Switching"
       },
       {
-        "command": "autoProfileSwitcher.switching.disable",
+        "command": "auto.profile.switcher.switching.disable",
         "title": "Auto Profile Switcher: Disable Auto Switching"
       },
       {
-        "command": "autoProfileSwitcher.display.messages.enable",
+        "command": "auto.profile.switcher.ui.messages.enable",
         "title": "Auto Profile Switcher: Eanble UI Messages"
       },
       {
-        "command": "autoProfileSwitcher.display.messages.disable",
+        "command": "auto.profile.switcher.ui.messages.disable",
         "title": "Auto Profile Switcher: Disable UI Messages"
+      },
+      {
+        "command": "auto.profile.switcher.console.messages.enable",
+        "title": "Auto Profile Switcher: Eanble Console Messages"
+      },
+      {
+        "command": "auto.profile.switcher.console.messages.disable",
+        "title": "Auto Profile Switcher: Disable Console Messages"
       }
     ]
   },

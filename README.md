@@ -6,21 +6,21 @@ The Automatic Profile Switcher extension, aims to automatically switch profiles 
 
 ## Settings
 
-### `autoProfileSwitcher.switching.enabled`
+### `auto.profile.switcher.switching.enabled`
 
 - **Description:** Enables or disables the automatic profile switching feature.
 - **Type:** Boolean
 - **Default:** true
 - **Usage:** When set to `true`, the extension automatically switches profiles based on the file extension or project type. Set to `false` to disable this functionality.
 
-### `autoProfileSwitcher.extensions`
+### `auto.profile.switcher.extensions`
 
 - **Description:** Controls whether informational messages are displayed when profiles are switched.
 - **Type:** Boolean
 - **Default:** true
 - **Usage:** Set to `true` to display messages when a profile switch occurs. If set to `false`, no messages will be shown.
 
-### `autoProfileSwitcher.extensions`
+### `auto.profile.switcher.extensions`
 
 - **Description:** Defines the mapping between file extensions and their respective profiles. This allows customization of which profile is activated when certain file types are opened.
 - **Type:** Array of objects
@@ -33,24 +33,25 @@ The Automatic Profile Switcher extension, aims to automatically switch profiles 
 Example Settings ( `settings.json` ):
 
 ```json
-{
-  "autoProfileSwitcher.switching.enabled": true,
-  "autoProfileSwitcher.display.messages": true,
-  "autoProfileSwitcher.extensions": [
+  "auto.profile.switcher.console.messages": false,
+  "auto.profile.switcher.ui.messages": true,
+  "auto.profile.switcher.switching.enabled": true,
+  "auto.profile.switcher.extensions": [
     {
-      "profile": "JavaScriptProfile",
-      "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      "profile": "GO",
+      "extensions": [
+        ".go",
+        ".sum",
+        ".mod"
+      ]
     },
     {
-      "profile": "PythonProfile",
-      "extensions": [".py"]
-    },
-    {
-      "profile": "JavaProfile",
-      "extensions": [".java"]
+      "profile": "Python",
+      "extensions": [
+        ".py"
+      ]
     }
-  ]
-}
+  ],
 ```
 
 Settings ( `Setting UI` )
@@ -59,22 +60,22 @@ Settings ( `Setting UI` )
 
 ## Commands
 
-### `autoProfileSwitcher.switching.enable`
+### `auto.profile.switcher.switching.enable`
 
 - **Description:** Command to enable the automatic profile switching feature.
 - **Usage:** Run this command to turn on automatic profile switching if it is currently disabled.
 
-### `autoProfileSwitcher.switching.disable`
+### `auto.profile.switcher.switching.disable`
 
 - **Description:** Command to disable the automatic profile switching feature.
 - **Usage:** Run this command to turn off automatic profile switching if it is currently enabled.
 
-### `autoProfileSwitcher.display.messages.enable`
+### `auto.profile.switcher.display.messages.enable`
 
 - **Description:** Command to enable the display of informational messages during profile switches.
 - **Usage:** Use this command to show messages whenever a profile switch occurs.
 
-### `autoProfileSwitcher.display.messages.disable`
+### `auto.profile.switcher.display.messages.disable`
 
 - **Description:** Command to disable the display of informational messages during profile switches.
 - **Usage:** Use this command to suppress messages during profile switches.
